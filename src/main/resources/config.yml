@@ -1,0 +1,9 @@
+filter:
+    - type: string
+      value: Can't keep up! Did the system time change, or is the server overloaded?
+      level: WARNING
+
+    - type: string
+      value: For help, type "help" or "?"
+      replace: 
+      level: INFO

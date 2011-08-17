@@ -1,0 +1,5 @@
+name: ConsoleFilter
+main: com.cypherx.consolefilter.ConsoleFilter
+version: 1.0
+description: Filter or modify any console message
+author: CypherX
