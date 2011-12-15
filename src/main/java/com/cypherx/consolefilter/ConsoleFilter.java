@@ -22,7 +22,7 @@ public class ConsoleFilter extends JavaPlugin {
 	private PluginDescriptionFile desc;
 	private File dataFolder;
 	private Logger log;
-    private Logger logcb;
+    private ArrayList<Logger> extraLoggers;
 
 	public void onDisable() {
 		log(Level.INFO, "v" + desc.getVersion() + " Disabled!");
@@ -36,9 +36,15 @@ public class ConsoleFilter extends JavaPlugin {
 			dataFolder.mkdirs();
 
 		log = Logger.getLogger("Minecraft");
-        logcb = Logger.getLogger("Minecraft.CommandBook");
 		log.setFilter(new CFFilter(loadFilter()));
-        logcb.setFilter(new CFFilter(loadFilter()));
+
+        extraLoggers = new ArrayList<Logger>();
+        extraLoggers.add(Logger.getLogger("Minecraft.CommandBook"));
+        for (Logger l : extraLoggers)  {
+            l.setFilter(new CFFilter(loadFilter()));
+            log(Level.INFO, "Enabling logging on extra logger " + l.getName());
+        }
+
 		log(Level.INFO, "v" + desc.getVersion() + " Enabled!");	
 	}
 
