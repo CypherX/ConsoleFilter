@@ -14,7 +14,7 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
-            <url>http://repo.bukkit.org/content/groups/repo/</url>
+			<url>http://repo.bukkit.org/content/groups/repo/</url>
 		</repository>
 	</repositories>
 	<dependencies>
