@@ -5,5 +5,5 @@ filter:
 
     - type: string
       value: For help, type "help" or "?"
-      replace: 
+      replace: ''
       level: INFO

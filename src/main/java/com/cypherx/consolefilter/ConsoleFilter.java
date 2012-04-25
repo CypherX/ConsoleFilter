@@ -1,54 +1,37 @@
 package com.cypherx.consolefilter;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
 public class ConsoleFilter extends JavaPlugin {
-	private PluginDescriptionFile desc;
-	private File dataFolder;
-	private Logger log;
+	private Logger log = Logger.getLogger("Minecraft");
 
 	public void onDisable() {
-		log(Level.INFO, "v" + desc.getVersion() + " Disabled!");
+		
 	}
 
 	public void onEnable() {
-		desc = getDescription();
-		dataFolder = getDataFolder();
+		getDataFolder().mkdirs();
+		loadConfiguration();
 
-		if (!dataFolder.exists())
-			dataFolder.mkdirs();
-
-		log = Logger.getLogger("Minecraft");
 		log.setFilter(new CFFilter(loadFilter()));
-		log(Level.INFO, "v" + desc.getVersion() + " Enabled!");	
+		log(Level.INFO, "v" + getDescription().getVersion() + " Enabled!");	
+	}
+
+	private void loadConfiguration() {
+		getConfig().options().copyDefaults(true);
+		saveConfig();
 	}
 
 	private ArrayList<FilterInfo> loadFilter() {
 		ArrayList<FilterInfo> filterList = new ArrayList<FilterInfo>();
-		File file = new File(dataFolder, "config.yml");
-		if (!file.exists())
-			writeConfig(file);
 
-		Configuration config = new Configuration(file);
-		config.load();
-
-		List<Object> list = config.getList("filter");
+		List<?> list = getConfig().getList("filter");
 		for (int i = 0; i < list.size(); i++) {
 			Object o = list.get(i);
 			if (o instanceof LinkedHashMap) {
@@ -100,58 +83,6 @@ public class ConsoleFilter extends JavaPlugin {
 
 		log(Level.INFO, "Loaded " + filterList.size() + " filters!");
 		return filterList;
-	}
-
-	private void writeConfig(File file) {
-		String fileName = file.getName();
-		log(Level.INFO, "Creating file: " + fileName);
-		String content = getResourceAsString("/res/" + fileName);
-		Writer out = null;
-
-		try {
-			out = new BufferedWriter(new FileWriter(file));
-			out.write(content);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (out != null)
-					out.close();
-			} catch (IOException e) {}
-		}
-	}
-
-	private String getResourceAsString(String resource) {
-		InputStream input = ConsoleFilter.class.getResourceAsStream(resource);
-		StringBuilder sb = new StringBuilder();
-
-		if (input != null) {
-			InputStreamReader isr = null;
-			BufferedReader br = null;
-			String newLine = System.getProperty("line.separator");
-			String line = null;
-
-			try {
-				isr = new InputStreamReader(input);
-				br = new BufferedReader(isr);
-
-				while ((line = br.readLine()) != null)
-					sb.append(line).append(newLine);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (isr != null)
-						isr.close();
-				} catch (IOException e) {}
-				try {
-					if (br != null)
-						br.close();
-				} catch (IOException e) {}
-			}
-		}
-
-		return sb.toString();
 	}
 
 	private void log(Level level, String message) {
