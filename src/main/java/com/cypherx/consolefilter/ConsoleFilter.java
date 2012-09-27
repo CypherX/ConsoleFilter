@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ConsoleFilter extends JavaPlugin {
@@ -30,7 +33,7 @@ public class ConsoleFilter extends JavaPlugin {
 
 	private ArrayList<FilterInfo> loadFilter() {
 		ArrayList<FilterInfo> filterList = new ArrayList<FilterInfo>();
-
+		filterList.clear();
 		List<?> list = getConfig().getList("filter");
 		for (int i = 0; i < list.size(); i++) {
 			Object o = list.get(i);
@@ -88,4 +91,21 @@ public class ConsoleFilter extends JavaPlugin {
 	private void log(Level level, String message) {
 		log.log(level, "[ConsoleFilter] " + message);
 	}
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        Player player = null;
+        if ((sender instanceof Player)) {
+            player = (Player)sender;
+        }
+        if ((command.getName().equalsIgnoreCase("cfreload")) && (args.length == 0)) {
+                    if (player != null) {
+                        player.sendMessage("[" + getDescription().getName() + "] This command is for console use only.");
+                    } else {
+                        this.reloadConfig();
+                        log.setFilter(new CFFilter(loadFilter()));
+                        log.info("[" + getDescription().getName() + "] Filters reloaded.");
+                    }
+                    return true;
+        }
+        return false;
+    }
 }

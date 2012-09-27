@@ -1,5 +1,10 @@
 name: ConsoleFilter
 main: com.cypherx.consolefilter.ConsoleFilter
-version: 1.1.0
+version: 1.1.1
 description: Filter or modify any console message
 author: CypherX
+
+commands:
+  cfreload:
+    description: <command> will try to reload the filterdefinitions
+    usage: Please use <command> without arguments
